@@ -22,7 +22,7 @@ pipeline {
             steps {
                 sh '''
                     echo "📦 Copying WAR file to Tomcat webapps..."
-                    cp target/*.war /opt/tomcat/webapps/petclinic.war
+                    cp target/*.war /opt/apache-tomcat-9.0.65/webapps
                 '''
             }
         }

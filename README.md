@@ -1,41 +1,94 @@
-# 🔧 Jenkins + Maven + Tomcat CI/CD Pipeline
+# 🐾 Petclinic CI/CD Pipeline with Jenkins
 
-This project demonstrates a simple CI/CD pipeline using Jenkins, Maven, and Apache Tomcat. The pipeline is built using Jenkins Declarative syntax and is designed to:
-
-- Clone a Java project from GitHub
-- Build it using Maven
-- Deploy the generated `.war` file to a local Tomcat server
+This project uses a Jenkins Declarative Pipeline to automate the build, test, analysis, security scan, deployment, and artifact publication process for the **Spring Petclinic** application.
 
 ---
 
-## 🛠 Tools Used
+## 🚀 Pipeline Overview
 
-- **Jenkins**
-- **Apache Maven**
+### 🔧 Tools & Environment
+
+- **Maven** (`maven3`)
+- **SonarQube Scanner** (`sonar-scanner`)
+- **OWASP Dependency Check**
+- **Nexus Repository**
 - **Apache Tomcat**
-- **GitHub**
-- **Linux (Ubuntu)**
 
 ---
 
+## 🔄 Jenkins Pipeline Stages
 
+### 1. **Git Checkout**
+- Clones the `main` branch from the GitHub repository:
+https://github.com/vanshrastogi111/Petclinic.git
 
-## 🚀 Pipeline Stages
+### 2. **Compile**
+- Compiles the source code using:
+```bash
+mvn clean compile
+```
 
-1. **Clone** the Petclinic repository
-2. **Build** using `mvn clean package`
-3. **Deploy** the `.war` to `/opt/tomcat/webapps/`
+### 3. Test Cases
+Runs all unit tests:
 
----
+```bash
+mvn test
+```
+### 4. SonarQube Analysis
+Performs static code analysis with SonarQube:
 
-## 🌐 Access the App
+```bash
+sonar-scanner \
+  -Dsonar.projectName=Petclinic \
+  -Dsonar.java.binaries=. \
+  -Dsonar.projectKey=Petclinic
+```
+### 5. Build
+Packages the application into a WAR file:
 
-After deployment: http://your-ip:8080/petclinic
+```bash
+mvn clean package
+```
+### 6. OWASP Dependency Check
+Scans for known security vulnerabilities in dependencies.
 
-## 📌 Notes
-Maven and JDK must be configured in Jenkins under Global Tools.
+### 7. Publish OWASP Report
+Publishes the dependency-check-report.html to the Jenkins job UI.
 
-Jenkins must have write access to the Tomcat webapps folder.
+### 8. Deploy to Nexus
+Publishes artifacts to a Nexus Repository using a Maven settings file.
+
+### 9. Tomcat Deployment
+Deploys the WAR file to a local Apache Tomcat server:
+
+```bash
+sudo cp target/petclinic.war /opt/apache-tomcat-9.0.65/webapps
+```
+
+## 🧪 Prerequisites- 
+### Notes and quick guide for each is present in the repository
+Jenkins with required plugins:
+
+Maven Integration
+
+SonarQube Scanner
+
+OWASP Dependency-Check
+
+Config File Provider
+
+SonarQube server configured in Jenkins (sonar-server)
+
+Nexus repository and credentials configured
+
+Apache Tomcat installed locally
+
+### 📌 Notes
+Ensure your Jenkins agent has permission to deploy to Tomcat (sudo rights).
+
+Replace placeholders like sonar-server, mavensettings, and Nexus file IDs with your own configuration IDs in Jenkins.
+
+Customize SonarQube and Nexus details according to your environment.
 
 
 ## **Jenkins Job Tutorial**
